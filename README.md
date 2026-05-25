@@ -224,9 +224,7 @@ Check your internet connection. OpenRouter may be having an outage — check [st
 OpenRouter rotates its `:free` endpoints — the model in `.env` was retired upstream. Pick a different free model from [openrouter.ai/models?q=free](https://openrouter.ai/models?q=free) and set it as `OPENROUTER_MODEL` in your `.env`, then restart the Jupyter kernel.
 
 **HTTP 429 — "temporarily rate-limited upstream"**
-OpenRouter's free tier shares a rate-limit pool across all users of a given upstream provider. The Meta Llama free models (`llama-3.x-*:free`) all route through Venice and get throttled aggressively. If you hit this:
-1. **Quickest:** swap `OPENROUTER_MODEL` in `.env` to a model on a different upstream provider — `openai/gpt-oss-20b:free`, `google/gemma-4-31b-it:free`, or `deepseek/deepseek-v4-flash:free` — then restart the kernel.
-2. **Most reliable for a live demo:** top up $5 of OpenRouter credit and remove the `:free` suffix. A full demo run costs well under $0.01 and removes the rate-limit cliff entirely.
+OpenRouter's free tier shares a rate-limit pool across all users of a given upstream provider. The Meta Llama free models (`llama-3.x-*:free`) all route through Venice and get throttled aggressively. Swap `OPENROUTER_MODEL` in `.env` to a model on a different upstream provider — `openai/gpt-oss-20b:free`, `google/gemma-4-31b-it:free`, or `deepseek/deepseek-v4-flash:free` — then restart the Jupyter kernel.
 
 **Sentence-transformers model is slow to load**
 The model downloads on first use and caches locally. If you're demoing on a slow connection, run `build_indexes.py` at home before coming in — the model will be cached and loads in seconds after that.
