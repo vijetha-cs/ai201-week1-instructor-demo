@@ -16,7 +16,7 @@ from openai import OpenAI
 # Default free model on OpenRouter. Can be changed via the MODEL env var
 # or by passing model= to the LLMClient constructor.
 # Full list of free models: https://openrouter.ai/models?q=free
-DEFAULT_MODEL = "meta-llama/llama-3.1-8b-instruct:free"
+DEFAULT_MODEL = "openai/gpt-oss-20b:free"
 
 OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
