@@ -1,0 +1,3 @@
+CS201 Computer Organization
+
+Students learn how software interacts with hardware. Topics include memory, processors, assembly language, and computer architecture. Labs are detailed and require careful attention. Students say the material is difficult at first but becomes easier with practice. Exams focus heavily on understanding system behavior.

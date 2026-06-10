@@ -1,0 +1,3 @@
+CS301 Operating Systems
+
+Students study processes, threads, synchronization, scheduling, and memory management. Programming projects are complex and often require debugging. The workload is considered heavy. Students report that completing projects significantly improves programming skills. Exams emphasize operating system concepts.

@@ -1,0 +1,3 @@
+CS303 Software Engineering
+
+Students work in teams to build large software projects. Topics include requirements gathering, design patterns, testing, and project management. Students appreciate the collaborative nature of the course. The final project represents a significant portion of the grade.

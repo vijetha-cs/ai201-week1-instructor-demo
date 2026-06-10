@@ -1,0 +1,3 @@
+CS203 Database Systems
+
+Students learn SQL, relational databases, normalization, and database design. Projects involve building and querying databases. Most students enjoy the practical nature of the assignments. Exams focus on database concepts and query optimization. Many students find SQL easy to learn.

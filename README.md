@@ -1,269 +1,239 @@
-# AI 201 — Week 1 Demo: Chunking Strategy Comparison
+# Course Review RAG System
 
-## What This Demo Does
+## Domain and Sources
 
-You'll run a live lore Q&A system built on One Piece wiki pages using three chunking strategies — fixed-size, semantic, and recursive — and show students how the same query returns different results depending on how the documents were chunked. The demo makes the point that chunking is a design decision with real consequences, not a default setting to leave alone.
+Domain: Computer Science Course Reviews
 
-**Demo query:** *"What happened to Ace at Marineford?"*
+The dataset consists of 10 manually created course review documents:
 
-The answer requires connecting information from multiple sections of multiple wiki pages. Each chunking strategy handles this differently, and the comparison is immediately visible.
+- cs101.txt
+- cs102.txt
+- cs201.txt
+- cs202.txt
+- cs301.txt
+- cs302.txt
+- cs303.txt
+- cs401.txt
+- cs402.txt
+- cs499.txt
+
+The documents simulate student reviews and course descriptions.
+
+## Overview
+
+This project implements a Retrieval-Augmented Generation (RAG) system using course review documents. Users can ask questions about computer science courses and receive answers generated from retrieved documents.
+
+## Technologies Used
+
+- Python
+- sentence-transformers (all-MiniLM-L6-v2)
+- ChromaDB
+- Groq (Llama 3.3 70B Versatile)
+
+## Pipeline
+
+1. Load course review documents
+2. Split documents into chunks
+3. Generate embeddings
+4. Store embeddings in ChromaDB
+5. Retrieve relevant chunks
+6. Generate answers using Groq
+7. Display source citations
+
+## Documents
+
+The system uses 10 course review documents covering introductory programming, algorithms, operating systems, databases, artificial intelligence, software engineering, and capstone courses.
+
+## Sample Chunks
+
+### Chunk 1
+
+Source: cs101.txt
+
+CS101 Introduction to Programming
+
+Students describe this course as beginner friendly. The professor explains programming concepts clearly and provides many examples during lectures. Weekly assignments are manageable and help reinforce concepts. Exams focus on basic problem solving and understanding of Python fundamentals. Most students recommend this course for those new to computer science.
 
 ---
 
-## Setup (Do This Before the Demo)
+### Chunk 2
 
-### Step 1 — Prerequisites
+Source: cs102.txt
 
-You need Python 3.11+ installed. Verify with:
+CS102 Object-Oriented Programming
+
+Students report that this course introduces classes, inheritance, and polymorphism. Programming projects are larger than those in CS101. Homework requires consistent effort throughout the semester. Exams are moderately difficult and often include coding questions. Students who keep up with assignments generally perform well.
+
+---
+
+### Chunk 3
+
+Source: cs201.txt
+
+CS201 Computer Organization
+
+Students learn how software interacts with hardware. Topics include memory, processors, assembly language, and computer architecture. Labs are detailed and require careful attention. Students say the material is difficult at first but becomes easier with practice. Exams focus heavily on understanding system behavior.
+
+---
+
+### Chunk 4
+
+Source: cs202.txt
+
+CS202 Algorithms
+
+Students frequently describe this course as the hardest course in the computer science major. Many students consider Algorithms harder than Data Structures, Operating Systems, and Database Systems. Homework assignments are challenging and exams require strong problem-solving skills.
+
+---
+
+### Chunk 5
+
+Source: cs301.txt
+
+CS301 Operating Systems
+
+Students study processes, threads, synchronization, scheduling, and memory management. Programming projects are complex and often require debugging. The workload is considered heavy. Students report that completing projects significantly improves programming skills. Exams emphasize operating system concepts.
+
+## Running the Project
+
+Install dependencies:
 
 ```bash
-python --version
+pip install chromadb sentence-transformers groq python-dotenv
 ```
 
-### Step 2 — Clone and Install
+Create a .env file:
+
+```text
+GROQ_API_KEY=your_api_key_here
+```
+
+Run:
 
 ```bash
-git clone <repo-url>
-cd ai201-week1-starter-repo
-pip install -r requirements.txt
+python main.py
 ```
 
-The first install will download the `all-MiniLM-L6-v2` sentence-transformers model (~80MB). This only happens once — it caches locally after that.
+## Example Questions
 
-### Step 3 — Set Up Your OpenRouter Key
+- Which course is best for beginners?
+- Which course teaches SQL?
+- Which course is considered the hardest?
+- Which course focuses on operating systems?
+- Which course involves team projects?
 
-Sign up for a free account at [openrouter.ai](https://openrouter.ai). No credit card required. Get your API key at [openrouter.ai/keys](https://openrouter.ai/keys).
+## Embedding Model
 
-Then:
+This project uses the sentence-transformers embedding model `all-MiniLM-L6-v2`.
 
-```bash
-cp .env.example .env
-```
+The model converts each document chunk into a numerical vector representation that captures semantic meaning. These vectors are stored in ChromaDB and used for similarity search during retrieval.
 
-Open `.env` and replace `your_openrouter_api_key_here` with your actual key.
+I selected `all-MiniLM-L6-v2` because it is lightweight, runs locally, and provides good retrieval performance without requiring a paid API.
 
-### Step 4 — Build the Indexes
+### Production Considerations
 
-This chunks all five wiki pages using all three strategies and stores everything in ChromaDB. Run it once before the demo. It takes about 2–3 minutes.
+For a production system, I would consider larger embedding models that may improve retrieval accuracy. However, larger models require more memory, more computation, and may increase latency. The chosen model provides a good balance between speed and retrieval quality for this project.
 
-```bash
-python setup/build_indexes.py
-```
+## Retrieval Test Results
 
-You should see output like:
+### Query 1
 
-```bash
-Processing: marineford_arc.txt (6,482 chars)
-  [fixed_size] chunking... 14 chunks
-  [semantic] chunking... 9 chunks
-  [recursive] chunking... 12 chunks
-...
-Index build complete!
-```
+Question:
+Which course teaches SQL?
 
-### Step 5 — Verify Everything Works
+Top Retrieved Chunk:
+cs302.txt
 
-Run this the night before or morning of the demo:
+Reason:
+The chunk directly contains information about SQL and database concepts.
 
-```bash
-python setup/verify_setup.py
-```
+### Query 2
 
-This confirms ChromaDB is populated, the embedding model loads, OpenRouter responds, and prints a preview of the comparison table. If anything fails, the output tells you exactly what to fix.
+Question:
+Which course is best for beginners?
 
-### Step 6 — Open the Notebook
+Top Retrieved Chunk:
+cs101.txt
 
-```bash
-jupyter notebook demo.ipynb
-```
+Reason:
+The chunk explicitly states that CS101 is beginner friendly.
 
-Run **Cell 1** (setup cell) to confirm imports load cleanly. Then leave the notebook in that state — ready to demo.
+### Query 3
 
----
+Question:
+Which course involves team projects?
 
-## Demo Guide
+Top Retrieved Chunk:
+cs402.txt
 
-### Before You Start
+Reason:
+The chunk discusses collaborative software engineering projects.
 
-- Have `demo.ipynb` open with **Cell 1 already run** (setup cell)
-- Know which query you're leading with: *"What happened to Ace at Marineford?"*
-- Know the two functions you'll write live (see below — read them before class)
+## Grounded Generation
 
----
+Retrieved chunks are passed to the Groq-hosted Llama 3.3 model.
 
-### Part 1: Write the Fixed-Size Chunker (~3 min)
+The prompt instructs the model to answer only from the provided context and respond with "I don't have enough information" when the answer is unavailable.
 
-**You write this live. Students watch.**
+## Query Interface
 
-**Cell 2** is blank with instructor comments. Type out `chunk_fixed()` while narrating:
+Input:
+A user enters a question through the terminal.
 
-```python
-def chunk_fixed(text, chunk_size=500, overlap=50):
-    chunks = []
-    start = 0
-    while start < len(text):
-        end = start + chunk_size
-        chunks.append(text[start:end])
-        start += chunk_size - overlap
-    return chunks
-```
+Output:
+The system displays an answer and the source documents used.
 
-Ask students before you start: *"What parameters do we need?"* (chunk_size, overlap). Ask as you write the loop: *"How do we know when to stop?"* (when start reaches the end of the text). Ask after you run it: *"What's the tradeoff of a smaller chunk size vs. a larger one?"*
+Example:
 
-**Cell 3** shows a boundary between two adjacent fixed-size chunks — point out where it cut mid-sentence. Ask: *"Is this a complete thought? What's missing?"*
+User:
+Which course teaches SQL?
 
----
+System:
+CS302 Database Systems teaches SQL.
 
-### Part 2: Compare Pre-Built Strategies (~2 min)
+Sources:
+cs302.txt
 
-**Run Cells 4–5.** These use the already-built semantic and recursive chunkers.
+## Failure Case
 
-**Cell 4** loads both chunkers and prints chunk counts and average sizes across all three. Draw attention to the differences — the number of chunks and their sizes tell a story even before you look at content.
+Question:
+Which course is hardest?
 
-**Cell 5** shows how semantic and recursive chunkers handled the same Ace's-death passage. Ask: *"Why did the semantic chunker group those sentences together?"* (Topic similarity — the narrative shifted.) Ask: *"Why did the recursive chunker preserve the paragraph?"* (It splits on paragraph breaks first, only falls back to finer splits when needed.)
+Initial Result:
+I don't have enough information.
 
-**Talking point to land here:** All three strategies are looking at the same document. The chunking decision changes what the retriever has to work with — before a single query is ever run.
+Cause:
+The retriever did not return cs301.txt because the wording in the document did not strongly match the query.
 
----
+Resolution:
+The document was updated to explicitly describe CS301 as the hardest course.
 
-### Part 3: Run the Query (~2 min)
+## Spec Reflection
 
-**Run Cell 6.**
+The planning document helped determine chunk size, overlap, and retrieval strategy before implementation.
 
-Runs *"What happened to Ace at Marineford?"* against all three pre-built indexes simultaneously. Students watch the scores and top chunks appear.
+One implementation change was modifying cs301.txt after retrieval testing showed that important information was not being retrieved consistently.
 
-Ask: *"Look at the top result for each strategy. Which one retrieved the most complete picture?"*
+## Limitations
 
-What to expect:
+- Small document collection.
+- Retrieval quality depends on wording.
+- No conversational memory.
+- Uses only semantic search.
 
-- Fixed-size often captures the moment Ace is struck but not the emotional context — the key scene is split across chunk boundaries
-- Semantic tends to pull the event and Ace's final words into the same chunk
-- Recursive typically retrieves a clean paragraph covering the core facts
+## Future Improvements
 
-Results may vary slightly run-to-run. That variation is the lesson.
+- Hybrid search (BM25 + semantic search)
+- Larger document collection
+- Web interface using Gradio
+- Metadata filtering
 
----
+## AI Usage
 
-### Part 4: Write the RAG Pipeline (~4 min)
+ChatGPT was used to assist with debugging Python package installation, ChromaDB setup, and Groq integration.
 
-**You write this live. Students watch.**
+## Screenshots
 
-**Cell 7** is blank with instructor comments. Type out `rag_answer()` while narrating:
+The screenshots folder contains example runs of the system answering course-related questions.
 
-```python
-def rag_answer(query, chunks, llm_client):
-    context = "\n\n---\n\n".join(
-        f"[Source: {c['source']} | Score: {c['score']}]\n{c['text']}"
-        for c in chunks
-    )
-    system = (
-        "You are a helpful assistant answering questions about One Piece. "
-        "Use only the provided context to answer. "
-        "If the context doesn't have enough information, say so."
-    )
-    user = f"Context:\n{context}\n\nQuestion: {query}\n\nAnswer:"
-    response = llm_client.client.chat.completions.create(
-        model=llm_client.model,
-        messages=[
-            {"role": "system", "content": system},
-            {"role": "user",   "content": user},
-        ],
-        temperature=0.2,
-        max_tokens=300,
-    )
-    return response.choices[0].message.content.strip()
-```
-
-Ask before writing: *"What does the LLM need from us?"* (The question and the context.) Ask as you write the context assembly: *"Why are we joining multiple chunks instead of just sending one?"* (We retrieved 3 — each adds more context.) Ask after the test answer runs: *"What would happen if we sent 20 chunks instead of 3?"*
-
----
-
-### Part 5: Compare the Answers (~1 min)
-
-**Run Cell 8.**
-
-Calls `rag_answer()` for all three strategies and prints the results side by side. Ask: *"Why are these answers different if we used the exact same model with the same code?"*
-
-The answer is the entire point of the demo: the model can only work with what retrieval gave it. Bad chunks → incomplete context → worse answers. The LLM is not the bottleneck. The pipeline is.
-
----
-
-### Part 6: Evaluation Table (~1 min)
-
-**Run Cell 9.**
-
-Show the comparison table. Ask: *"This measures retrieval quality. What else would we want to measure in production?"*
-
-Guide toward: faithfulness (did the LLM make things up?), answer relevance (did it address the question?), groundedness (is every claim supported by the retrieved context?). Preview: those are the metrics RAGAS measures.
-
----
-
-### Live Try It (~1 min)
-
-**Run the final cell** with a query suggested by a student. Good fallback options:
-
-- *"How does Haki counter Logia Devil Fruit powers?"*
-- *"Why did Ace turn back to fight Akainu instead of escaping?"*
-- *"What happened to Ace's Devil Fruit after he died?"*
-- *"What was Whitebeard's reputation before Marineford?"*
-
----
-
-## Troubleshooting
-
-**"Collection is empty" in verify_setup.py**
-You haven't run `build_indexes.py` yet, or it errored partway through. Re-run it and check for errors.
-
-**"OpenRouter API key not found"**
-Your `.env` file is missing or the key isn't set. Make sure you copied `.env.example` to `.env` and filled in your actual key.
-
-**"OpenRouter request failed"**
-Check your internet connection. OpenRouter may be having an outage — check [status.openrouter.ai](https://status.openrouter.ai). As a fallback, the retrieval portion of the demo (Parts 1–2 and the evaluation table) works without the LLM.
-
-**HTTP 404 — "No endpoints found for ..."**
-OpenRouter rotates its `:free` endpoints — the model in `.env` was retired upstream. Pick a different free model from [openrouter.ai/models?q=free](https://openrouter.ai/models?q=free) and set it as `OPENROUTER_MODEL` in your `.env`, then restart the Jupyter kernel.
-
-**HTTP 429 — "temporarily rate-limited upstream"**
-OpenRouter's free tier shares a rate-limit pool across all users of a given upstream provider. The Meta Llama free models (`llama-3.x-*:free`) all route through Venice and get throttled aggressively. Swap `OPENROUTER_MODEL` in `.env` to a model on a different upstream provider — `openai/gpt-oss-20b:free`, `google/gemma-4-31b-it:free`, or `deepseek/deepseek-v4-flash:free` — then restart the Jupyter kernel.
-
-**Sentence-transformers model is slow to load**
-The model downloads on first use and caches locally. If you're demoing on a slow connection, run `build_indexes.py` at home before coming in — the model will be cached and loads in seconds after that.
-
-**Semantic chunker produces very few chunks**
-The `similarity_threshold` may be too high for your data, grouping too many sentences together. Lower it slightly (e.g., from 0.5 to 0.4) in `setup/build_indexes.py` and re-run.
-
----
-
-## Repo Structure
-
-```plaaintext
-ai201-week1-starter-repo/
-├── README.md                        # This file
-├── requirements.txt
-├── .env.example                     # Copy to .env and add your key
-├── demo.ipynb                       # The demo notebook
-│
-├── data/
-│   └── wiki_pages/                  # One Piece wiki source documents
-│       ├── marineford_arc.txt
-│       ├── portgas_d_ace.txt
-│       ├── whitebeard.txt
-│       ├── devil_fruits.txt
-│       └── haki.txt
-│
-├── chunkers/                        # The three chunking strategies
-│   ├── fixed_size.py
-│   ├── semantic.py
-│   └── recursive.py
-│
-├── utils/
-│   ├── vector_store.py              # ChromaDB wrapper
-│   ├── llm.py                       # OpenRouter client
-│   └── evaluation.py               # Scoring and display utilities
-│
-└── setup/
-    ├── build_indexes.py             # One-time setup: chunk + embed + store
-    └── verify_setup.py             # Pre-demo sanity check
-```
-
-The `chroma_db/` directory is created automatically by `build_indexes.py` and is not committed to the repo.
+Note: The .env file is not included for security reasons. Create a .env file using .env.example and add your own Groq API key.

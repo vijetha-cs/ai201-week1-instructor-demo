@@ -1,0 +1,3 @@
+CS101 Introduction to Programming
+
+Students describe this course as beginner friendly. The professor explains programming concepts clearly and provides many examples during lectures. Weekly assignments are manageable and help reinforce concepts. Exams focus on basic problem solving and understanding of Python fundamentals. Most students recommend this course for those new to computer science.

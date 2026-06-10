@@ -1,0 +1,3 @@
+CS302 Artificial Intelligence
+
+Students explore search algorithms, machine learning basics, and intelligent systems. Projects involve implementing AI techniques. The course includes both programming and theoretical concepts. Students find the material interesting and relevant to current technology trends. Exams are moderate in difficulty.

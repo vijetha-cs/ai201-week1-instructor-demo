@@ -1,0 +1,3 @@
+CS102 Object-Oriented Programming
+
+Students report that this course introduces classes, inheritance, and polymorphism. Programming projects are larger than those in CS101. Homework requires consistent effort throughout the semester. Exams are moderately difficult and often include coding questions. Students who keep up with assignments generally perform well.

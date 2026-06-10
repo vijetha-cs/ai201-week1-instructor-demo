@@ -1,0 +1,3 @@
+CS202 Algorithms
+
+Students frequently describe this course as the hardest course in the computer science major. Many students consider Algorithms harder than Data Structures, Operating Systems, and Database Systems. Homework assignments are challenging and exams require strong problem-solving skills.
